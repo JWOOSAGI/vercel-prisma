@@ -33,31 +33,30 @@ export default function LoginPage() {
 				throw new Error('Please enter your credentials.');
 
 			const payload: I_ApiUserLoginRequest = {
-				login: loginRef.current?.value,
+				email: loginRef.current?.value,
 				password: passwordRef.current?.value,
 			};
+			console.log(`MY-INFO: Payload is ${JSON.stringify(payload)}`)
 
-			const response = await fetch('/api/login', {
+			console.log(`1 - App Routing GET`)
+			const response1 = await fetch('/api/hello', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			});
+			// -------------------------------------------------------------
+			console.log(`2 - App Routing POST`)
+			const response2 = await fetch('/api/login', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify(payload),
 			});
+			
 
-			const data: I_ApiUserLoginResponse = await response.json();
 
-			if (data.success) {
-				setLoginIsComplete(true);
-				if (redirect) {
-					window.location.replace(redirect);
-				} else {
-					window.location.replace('/dashboard');
-				}
-				return;
-			}
-
-			throw new Error(data.message);
 		} catch (error) {
 			let mess = 'Something went wrong.';
 			if (error instanceof Error) {
@@ -90,7 +89,7 @@ export default function LoginPage() {
 							defaultValue="john@example.com"
 							type="text"
 							ref={loginRef}
-							className="input input-bordered"
+							className="input input-bordered text-black"
 							onKeyDown={e => {
 								if (e.key === 'Enter') {
 									if (passwordRef.current) {
@@ -108,7 +107,7 @@ export default function LoginPage() {
 							defaultValue="12345"
 							type="password"
 							ref={passwordRef}
-							className="input input-bordered"
+							className="input input-bordered text-black"
 							onKeyDown={e => {
 								if (e.key === 'Enter') {
 									handleLogin();
